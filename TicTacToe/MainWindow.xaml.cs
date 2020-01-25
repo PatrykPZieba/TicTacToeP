@@ -20,6 +20,10 @@ namespace TicTacToe
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const int size = 4;
+
+        private List<Button> listOfButtons;
+        private List<Button> bestMoves;
         public MainWindow()
         {
             InitializeComponent();
