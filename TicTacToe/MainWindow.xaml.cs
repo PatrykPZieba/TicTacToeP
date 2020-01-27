@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace TicTacToe
 {
     /// <summary>
-    /// Logika interakcji dla klasy MainWindow.xaml
+    /// Logika interakcji dla MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -24,9 +24,11 @@ namespace TicTacToe
 
         private List<Button> listOfButtons;
         private List<Button> bestMoves;
+
         public MainWindow()
         {
             InitializeComponent();
+
             // Lista przycisków (pól)
             listOfButtons = new List<Button>() {
                 A1, A2, A3, A4,
@@ -94,6 +96,92 @@ namespace TicTacToe
             return returnValue;
         }
 
-    }
+
+        /// <summary>
+        /// Sprawdź wiersze i kolumny
+        /// </summary>
+        /// <param name = "arrayOfButtons"> Dwuwymiarowa tablica przycisków </param>
+        /// <returns> Aktualizowanie statusu gry </returns>
+        private GameStatus checkHorizontalAndVertical(Button[,] arrayOfButtons)
+        {
+            bool gameOver = false;
+            string winner = null;
+
+            for (int i = 0; i < size; i++)
+            {
+                if (GameStatus.isEquals(arrayOfButtons[i, 0], arrayOfButtons[i, 1], arrayOfButtons[i, 2], arrayOfButtons[i, 3], ref gameOver))
+                    winner = Convert.ToString(arrayOfButtons[i, 0].Content);
+
+                if (GameStatus.isEquals(arrayOfButtons[0, i], arrayOfButtons[1, i], arrayOfButtons[2, i], arrayOfButtons[3, i], ref gameOver))
+                    winner = Convert.ToString(arrayOfButtons[0, i].Content);
+            }
+            return new GameStatus(gameOver, winner, false);
+        }
+
+
+        /// <summary>
+        /// Sprawdzanie 2 przekątnych
+        /// </summary>
+        /// <returns> Aktualizowanie statusu gry </returns>
+        private GameStatus checkDialog()
+        {
+            bool gameOver = false;
+            string winner = null;
+
+            if (GameStatus.isEquals(A1, B2, C3, D4, ref gameOver))
+                winner = Convert.ToString(A1.Content);
+
+            else if (GameStatus.isEquals(A4, B3, C2, D1, ref gameOver))
+                winner = Convert.ToString(A4.Content);
+
+            return new GameStatus(gameOver, winner, false);
+        }
+
+
+        /// <summary>
+        /// Sprawdź remis
+        /// </summary>
+        /// <returns>True = remis</returns>
+        private bool checkForTie()
+        {
+            bool tie = true;
+            foreach (var button in listOfButtons)
+            {
+                if (button.IsEnabled == true)
+                    tie = false;
+            }
+            return tie;
+        }
+
+        /// <summary>
+        /// Czy nastąpił koniec gry
+        /// </summary>
+        /// <param name = "status"> Status gry </param>
+        /// <powrót> Prawda = jest zwycięzca. Fałsz = brak zwycięzcy </returns>
+        private bool isOver(GameStatus status)
+        {
+            bool returnValue = false;
+            if (status.gameOver)
+            {
+                MessageBox.Show((status.winner == "O") ? ("A.I Wins") : ("Player Wins"));
+                returnValue = true;
+            }
+            return returnValue;
+        }
+
+
+        /// <summary>
+        /// Przycisk do restartu gry
+        /// </summary>
+        private void Button_Click_Restart(object sender, RoutedEventArgs e)
+        {
+            foreach (var button in listOfButtons)
+            {
+                button.IsEnabled = true;
+                button.Content = "";
+            }
+        }
+
+
     }
 }
